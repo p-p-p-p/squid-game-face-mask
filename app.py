@@ -351,6 +351,8 @@ if __name__ == "__main__":
         try:
             os.rename(rename_file_name, f"./export/{uploaded_file.name}")
             st.markdown(f"## Face mask added successfully")
+            with open(f'./export/{uploaded_file.name}', 'rb') as f:
+                st.download_button('Download video', f, file_name=uploaded_file.name) 
             st.markdown(f"## Video save at {os.getcwd()}/export/{uploaded_file.name}")
         except:
             st.markdown(f"## Face mask added successfully")
