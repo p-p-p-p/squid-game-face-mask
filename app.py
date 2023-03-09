@@ -199,11 +199,12 @@ def mask_overlay(image, faces, mask_up, mask_down, mask_img, mask_points):
     new_image = overlay_transparent(image, png_image, 0, 0)
     return image
 def download_video(filename):
+     new_file_name=filename.split("/")[-1]
      with open(filename, "rb") as file:
                 st.download_button(
                     label="Download Video",
                     data=file,
-                    file_name="video.mp4",
+                    file_name=new_file_name,
                     mime="video/mp4",  
                 )
       
@@ -372,5 +373,3 @@ if __name__ == "__main__":
                 os.remove(os.remove(f"./temp/{i}"))
             except:
                 pass
-
-
