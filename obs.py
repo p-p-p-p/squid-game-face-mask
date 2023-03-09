@@ -219,8 +219,17 @@ def mask_overlay(image, faces, mask_up, mask_down, mask_img, mask_points):
     return image
 
 
-def main(mask_up, mask_down, flip_the_video, mask_path, csv_path):
+def main(mask_up, mask_down, flip_the_video, mask_path, csv_path,save_video):
     cap = cv2.VideoCapture(0)
+    # get the video frame rate and dimensions
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    # create a VideoWriter object to save the output video
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # specify the codec for the output video
+    out = cv2.VideoWriter('output_video.mp4', fourcc, fps, (width, height))
+    
     if cap.isOpened():
         ret, frame = cap.read()
     else:
@@ -254,15 +263,22 @@ def main(mask_up, mask_down, flip_the_video, mask_path, csv_path):
             print(f"error is {e}")
         if img is None:
             break
+        if save_video:
+            out.write(img)
         cv2.imshow("frame", img)
-        cv2.waitKey(1)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     cap.release()
+    if save_video:
+        out.release()
+    cv2.destroyAllWindows()
+
 
 
 if __name__ == "__main__":
 
     mask = ("Villain Mask", "Circle Mask","Red Mask","Blue Mask", "Add Your Own Mask")
-    select_mask=mask[3]
+    select_mask=mask[2]
     if select_mask == "Villain Mask":
         mask_path = "./assets/villain_mask.png"
         csv_path = "./assets/villain_mask.csv"
@@ -275,12 +291,12 @@ if __name__ == "__main__":
     if select_mask == "Blue Mask":
         mask_path = "./assets/bluemask.png"
         csv_path = "./assets/blue_mask.csv"     
-
+    save_video=False
     mask_up = 10
     mask_down = 8
     flip_video =  ("Yes", "No")
     flip_the_video=flip_video[0]
-    main(mask_up, mask_down, flip_the_video, mask_path, csv_path)
+    main(mask_up, mask_down, flip_the_video, mask_path, csv_path,save_video)
     for i in os.listdir("./temp/"):
         try:
             os.remove(os.remove(f"./temp/{i}"))
