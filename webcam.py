@@ -161,29 +161,7 @@ def mask_overlay(image, faces, mask_up, mask_down, mask_img, mask_points):
         20,
         21,
     ]
-    extend_y = [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-    ]
+
     minimize_y = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
     face_points = {}
     for i in faces[0]:
@@ -268,14 +246,22 @@ def main(mask_up, mask_down, flip_the_video, mask_path, csv_path):
 if __name__ == "__main__":
 
     select_mask = st.selectbox(
-        "Select your mask", ("Villain Mask", "Circle Mask", "Add Your Own Mask")
-    )
+            "Select your mask", ("Villain Mask", "Circle Mask","Red Mask","Blue Mask", "Add Your Own Mask")
+        )
+    
     if select_mask == "Villain Mask":
         mask_path = "./assets/villain_mask.png"
         csv_path = "./assets/villain_mask.csv"
     if select_mask == "Circle Mask":
         mask_path = "./assets/circle_mask.png"
         csv_path = "./assets/circle_mask.csv"
+    if select_mask == "Red Mask":
+        mask_path = "./assets/redmask.png"
+        csv_path = "./assets/red_mask.csv"  
+    if select_mask == "Blue Mask":
+        mask_path = "./assets/bluemask.png"
+        csv_path = "./assets/blue_mask.csv"     
+        
     if select_mask == "Add Your Own Mask":
         uploaded_png_file = st.file_uploader("Choose an mask png image.", type="png")
         if uploaded_png_file is not None:

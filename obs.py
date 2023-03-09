@@ -261,14 +261,20 @@ def main(mask_up, mask_down, flip_the_video, mask_path, csv_path):
 
 if __name__ == "__main__":
 
-    mask = ("Villain Mask", "Circle Mask", "Add Your Own Mask")
-    select_mask=mask[0]
+    mask = ("Villain Mask", "Circle Mask","Red Mask","Blue Mask", "Add Your Own Mask")
+    select_mask=mask[3]
     if select_mask == "Villain Mask":
         mask_path = "./assets/villain_mask.png"
         csv_path = "./assets/villain_mask.csv"
     if select_mask == "Circle Mask":
         mask_path = "./assets/circle_mask.png"
         csv_path = "./assets/circle_mask.csv"
+    if select_mask == "Red Mask":
+        mask_path = "./assets/redmask.png"
+        csv_path = "./assets/red_mask.csv"  
+    if select_mask == "Blue Mask":
+        mask_path = "./assets/bluemask.png"
+        csv_path = "./assets/blue_mask.csv"     
 
     mask_up = 10
     mask_down = 8

@@ -160,29 +160,6 @@ def mask_overlay(image, faces, mask_up, mask_down, mask_img, mask_points):
         20,
         21,
     ]
-    extend_y = [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-    ]
     minimize_y = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
     face_points = {}
     for i in faces[0]:
@@ -221,7 +198,15 @@ def mask_overlay(image, faces, mask_up, mask_down, mask_img, mask_points):
     png_image = normalize8(transformed_mask)
     new_image = overlay_transparent(image, png_image, 0, 0)
     return image
-
+def download_video(filename):
+     with open(filename, "rb") as file:
+                st.download_button(
+                    label="Download Video",
+                    data=file,
+                    file_name="video.mp4",
+                    mime="video/mp4",  
+                )
+      
 
 def main(mask_up, mask_down, flip_the_video, mask_path, csv_path, display_video):
     global input_file_path
@@ -235,9 +220,13 @@ def main(mask_up, mask_down, flip_the_video, mask_path, csv_path, display_video)
     size = (width, height)
     file_name = "./temp/output.mp4"
     var1 = os.system(f'ffmpeg -i {input_file} "./temp/audio.mp3"')
-
+    no_audio=True
     if var1 == 0:
         print("audio extracted")
+        no_audio=False
+    else:
+        no_audio=True
+        
     # codec = cv2.VideoWriter_fourcc(*"mpeg")
     codec = cv2.VideoWriter_fourcc(*"MP4V")
     video_output = cv2.VideoWriter(file_name, codec, framerate, size, True)
@@ -286,9 +275,14 @@ def main(mask_up, mask_down, flip_the_video, mask_path, csv_path, display_video)
     cap.release()
     aduio_file = "./temp/audio.mp3"
     rename_file_name = f"./export/output_" + input_file.split("/")[-1]
-    os.system(
-        f"ffmpeg -i {file_name} -i {aduio_file} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 {rename_file_name}"
-    )
+    if no_audio==False:
+        var7=os.system(
+            f"ffmpeg -i {file_name} -i {aduio_file} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 {rename_file_name}"
+        )
+        
+    if no_audio==True:
+        shutil.copy(file_name,rename_file_name)
+        
     return rename_file_name
 
 
@@ -320,14 +314,23 @@ if __name__ == "__main__":
     )
 
     select_mask = st.selectbox(
-        "Select your mask", ("Villain Mask", "Circle Mask", "Add Your Own Mask")
+        "Select your mask", ("Villain Mask", "Circle Mask","Red Mask","Blue Mask", "Add Your Own Mask")
     )
+  
     if select_mask == "Villain Mask":
         mask_path = "./assets/villain_mask.png"
         csv_path = "./assets/villain_mask.csv"
     if select_mask == "Circle Mask":
         mask_path = "./assets/circle_mask.png"
         csv_path = "./assets/circle_mask.csv"
+    if select_mask == "Red Mask":
+        mask_path = "./assets/redmask.png"
+        csv_path = "./assets/red_mask.csv"  
+    if select_mask == "Blue Mask":
+        mask_path = "./assets/bluemask.png"
+        csv_path = "./assets/blue_mask.csv"     
+        
+        
     if select_mask == "Add Your Own Mask":
         uploaded_png_file = st.file_uploader("Choose an mask png image.", type="png")
         if uploaded_png_file is not None:
@@ -344,6 +347,7 @@ if __name__ == "__main__":
     mask_down = st.slider("Make mask bigger lower size")
     flip_the_video = st.selectbox("Horizontally flip video ", ("Yes", "No"))
     display_video = st.checkbox("Display what going on")
+    download_link = st.checkbox("Generate video download link for small video")
     if st.button("Start adding face mask"):
         rename_file_name = main(
             mask_up, mask_down, flip_the_video, mask_path, csv_path, display_video
@@ -351,14 +355,22 @@ if __name__ == "__main__":
         try:
             os.rename(rename_file_name, f"./export/{uploaded_file.name}")
             st.markdown(f"## Face mask added successfully")
-            with open(f'./export/{uploaded_file.name}', 'rb') as f:
-                st.download_button('Download video', f, file_name=uploaded_file.name) 
             st.markdown(f"## Video save at {os.getcwd()}/export/{uploaded_file.name}")
+            filename = f"./export/{uploaded_file.name}"
+            if download_link:
+                download_video(filename)
+           
         except:
             st.markdown(f"## Face mask added successfully")
             st.markdown(f"## Video save at {os.getcwd()}/export/output_{new_id}.mp4")
+            filename = f"./export/output_{new_id}.mp4"
+            if download_link:
+                download_video(filename)
+           
         for i in os.listdir("./temp/"):
             try:
                 os.remove(os.remove(f"./temp/{i}"))
             except:
                 pass
+
+
