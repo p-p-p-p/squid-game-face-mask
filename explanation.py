@@ -201,6 +201,7 @@ def main():
     pTime = 0
     while True:
         success, image = cap.read()
+        #Enable Mirror Image
         image = cv2.flip(image, 1)
         faces = face_point(image)
         if len(faces) >= 1:
