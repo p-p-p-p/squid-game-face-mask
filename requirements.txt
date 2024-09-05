@@ -4,3 +4,4 @@ streamlit==0.82.0
 numpy==1.19.3
 ffmpeg-python
 uuid
+#opencv-python-headless==4.10.0.84
